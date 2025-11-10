@@ -4,6 +4,16 @@ security:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
+        users_in_memory: #if it says  Invalid firewall "main": user provider "users_in_memory" not found check the line 28.(originally in_memory)
+            memory:
+                users:
+                    admin:
+                        password: '$2y$13$gflj7QrN965JgtuRs3wnvuC3zJ.dRSdYlXIkUx.WkZLrH0Og.wXNq'
+                        roles: ['ROLE_ADMIN']
+                    user:
+                        password: '$2y$13$0ODw78gOqhCD04E64oNPaO4tZ7WpfuOYElQ2l9qAIXLtr2NkpkCKK'
+                        roles: ['ROLE_USER']
+
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
@@ -15,7 +25,8 @@ security:
             security: false
         main:
             lazy: true
-            provider: app_user_provider
+            http-basic: ~
+            provider: users_in_memory #app_user_provider is the original
             
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -26,7 +37,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/dashboard, roles: ROLE_USER }
+        - { path: ^/dashboard, roles: [ROLE_ADMIN, ROLE_USER] }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
